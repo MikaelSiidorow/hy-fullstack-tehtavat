@@ -1,0 +1,10 @@
+selain->palvelin: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+palvelin-->selain: {"message":"note created"}
+
+note over selain:
+lomake käsitellään JavaScriptillä tapahtumankäsitellijällä
+
+koodi luo muistiinpanon, lisää sen listalle ja piirtää
+muistiinpanojen listan uudelleen 
+ja lähettää uuden muistiinpanon palvelimelle
+end note

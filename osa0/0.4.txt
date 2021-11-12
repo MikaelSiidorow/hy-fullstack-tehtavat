@@ -1,0 +1,30 @@
+selain->palvelin: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note
+palvelin-->selain: redirectaus Location: /notes
+
+note over selain:
+palvelin kehottaa selainta tekemään automaattisesti 
+uuden HTTP GET -pyynnön headerin Location kertomaan paikkaan, 
+eli osoitteeseen notes
+end note
+
+selain->palvelin: HTTP GET https://studies.cs.helsinki.fi/exampleapp/notes
+palvelin-->selain: HTML-koodi
+
+selain->palvelin: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.css
+palvelin-->selain: main.css
+note over selain:
+
+selain alkaa suorittaa js-koodia
+joka pyytää JSON-datan palvelimelta
+end note
+
+selain->palvelin: HTTP GET https://studies.cs.helsinki.fi/exampleapp/data.json
+palvelin-->selain: [{"content":"new note y'all","date":"2021-11-11T18:36:25.995Z"},...]
+
+note over selain:
+selain suorittaa tapahtumankäsittelijän
+joka renderöi muistiinpanot näytölle
+end note
+
+selain->palvelin: HTTP GET https://studies.cs.helsinki.fi/favicon.ico
+palvelin-->selain: favicon.ico
