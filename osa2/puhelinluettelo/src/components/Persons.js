@@ -3,7 +3,7 @@ import Person from './Person'
 
 
 
-const Persons = ({ persons, filter, showAll }) => {
+const Persons = ({ persons, filter, showAll, deletePerson }) => {
   const personsToShow = showAll
     ? persons
     : persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase()))
@@ -11,7 +11,11 @@ const Persons = ({ persons, filter, showAll }) => {
   return (
     <div>
       {personsToShow.map(person =>
-      <Person key={person.name} name={person.name} number={person.number} />  
+      <Person 
+        key={person.id} 
+        person={person} 
+        deletePerson={() => deletePerson(person.id)} 
+      /> 
     )}
     </div> 
   )
