@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import Notification from './components/Notification'
+import Error from './components/Error'
 import personsService from './services/persons'
 
 const App = () => {
@@ -10,7 +12,9 @@ const App = () => {
   const [ newNumber, setNewNumber ] = useState('')
   const [ newFilter, setNewFilter ] = useState('')
   const [ showAll, setShowAll ] = useState(true)
-
+  const [ notificationMessage, setNotificationMessage ] = useState(null)
+  const [ errorMessage, setErrorMessage ] = useState(null) 
+  
   useEffect(() => {
     personsService
       .getAll()
@@ -35,8 +39,12 @@ const App = () => {
         .create(personObject)
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))
+          setNotificationMessage(`Added ${newName}`)
           setNewName('')
           setNewNumber('')
+          setTimeout(() => {
+            setNotificationMessage(null)
+          }, 3000)
       })
     }
   }
@@ -50,6 +58,12 @@ const App = () => {
         .then(returnedPerson => {
           setPersons(persons.map(person => person.id !== id ? person : returnedPerson))
         })
+        .catch(error => {
+          setErrorMessage(`Information of ${newName} has already been removed from server`)
+          setTimeout(() => {
+            setNotificationMessage(null)
+          }, 3000)
+        })
   }
 
   const deletePerson = id => {
@@ -59,6 +73,16 @@ const App = () => {
       .deletePerson(id)
       .then(() => {
         setPersons(persons.filter(person => person.id !== id))
+        setNotificationMessage(`Deleted ${personToDelete}`)
+        setTimeout(() => {
+          setNotificationMessage(null)
+        }, 3000)
+      })
+      .catch(error => {
+        setErrorMessage(`Information of ${personToDelete} has already been removed from server`)
+        setTimeout(() => {
+          setNotificationMessage(null)
+        }, 3000)
       })
     }
   }
@@ -84,6 +108,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Error message={errorMessage} />
+      <Notification message={notificationMessage} />
       <Filter value={newFilter} onChange={handleFilterChange}/>
       <h2>add a new</h2>
       <PersonForm 
