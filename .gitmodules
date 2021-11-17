@@ -1,0 +1,6 @@
+[submodule "osa3/hy-fullstack-puhelinluettelo-backend"]
+	path = osa3/hy-fullstack-puhelinluettelo-backend
+	url = https://github.com/MikaelSiidorow/hy-fullstack-puhelinluettelo-backend
+[submodule "osa3/puhelinluettelo-backend"]
+	path = osa3/puhelinluettelo-backend
+	url = https://github.com/MikaelSiidorow/hy-fullstack-puhelinluettelo-backend
