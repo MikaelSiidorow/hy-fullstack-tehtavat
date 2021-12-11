@@ -88,8 +88,54 @@ describe('favourite blog', () => {
 
   test('when list has multiple blogs return most liked', () => {
     const result = listHelper.favouriteBlog(blogs)
-    console.log(result)
     expect(result).toEqual(blogs[2])
   })
 
+})
+
+describe('most blogs', () => {
+
+  test('when empty list return null', () => {
+    const result = listHelper.mostBlogs([])
+    expect(result).toEqual(null)
+  })
+
+  test('when list has only one blog return the author', () => {
+    const result = listHelper.mostBlogs([blogs[0]])
+    expect(result).toEqual({
+      author: "Michael Chan",
+      blogs: 1
+    })
+  })
+
+  test('when list has multiple blogs return author with most blogs', () => {
+    const result = listHelper.mostBlogs(blogs)
+    expect(result).toEqual({
+      author: "Robert C. Martin",
+      blogs: 3
+    })
+  })
+})
+
+describe('most likes', () => {
+  test('when empty list return null', () => {
+    const result = listHelper.mostBlogs([])
+    expect(result).toEqual(null)
+  })
+
+  test('when list has only one blog return the author and likes', () => {
+    const result = listHelper.mostLikes([blogs[0]])
+    expect(result).toEqual({
+      author: "Michael Chan",
+      likes: 7
+    })
+  })
+
+  test('when list has multiple blogs return author with most likes', () => {
+    const result = listHelper.mostLikes(blogs)
+    expect(result).toEqual({
+      author: "Edsger W. Dijkstra",
+      likes: 17
+    })
+  })
 })
