@@ -21,10 +21,6 @@ test('the correct amount of blogs are returned as json', async () => {
   expect(response.body).toHaveLength(helper.blogs.length)
 })
 
-afterAll(() => {
-  mongoose.connection.close()
-})
-
 test('returned blog identifier is named id', async () => {
   const response = await api.get('/api/blogs')
   response.body.forEach(blog => {
@@ -111,4 +107,52 @@ describe('invalid blogs are not added', () => {
     .send(newBlog)
     .expect(400)
   })
+})
+
+describe('deletion of a blog', () => {
+
+  test('blog with valid id is deleted with status code 204', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogtoDelete = blogsAtStart[0]
+
+    await api
+      .delete(`/api/blogs/${blogtoDelete.id}`)
+      .expect(204)
+
+    const blogsAtEnd = await helper.blogsInDb()
+
+    expect(blogsAtEnd).toHaveLength(helper.blogs.length - 1)
+
+    const urls = blogsAtEnd.map(r => r.url)
+
+    expect(urls).not.toContain(blogtoDelete.url)
+  })
+
+})
+
+describe('update of a blog', () => {
+
+  test('likes of blog with valid id are updated', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToUpdate = blogsAtStart[0]
+    const updatedBlog = {
+      ...blogToUpdate,
+      likes: blogToUpdate.likes + 1
+    }
+
+    await api
+      .put(`/api/blogs/${updatedBlog.id}`)
+      .send(updatedBlog)
+      .expect(200)
+
+    const blogsAtEnd = await helper.blogsInDb()
+
+    expect(blogsAtEnd).toHaveLength(helper.blogs.length)
+    expect(blogsAtEnd[0].likes).toEqual(updatedBlog.likes)
+  })
+
+})
+
+afterAll(() => {
+  mongoose.connection.close()
 })
