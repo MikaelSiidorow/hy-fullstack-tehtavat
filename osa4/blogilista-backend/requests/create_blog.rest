@@ -1,6 +1,6 @@
 POST http://localhost:3003/api/blogs/
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwiaWQiOiI2MWI4YWU4NjUyOGQ3ZWYxYjE1YTU2NjUiLCJpYXQiOjE2NDAwNDIwMDd9.Zt6oQt9jqZp8ONgly32X_x3f_AWBIQQBxyTqUStkxwI
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwiaWQiOiI2MWI4YWU4NjUyOGQ3ZWYxYjE1YTU2NjUiLCJpYXQiOjE2NDAwNDQwNzZ9.HH5K4y19sd0peylt3TL3QBcOpN7SYNuVvW3VW6KqQvQ
 
 {
     "title": "Testing 123",
