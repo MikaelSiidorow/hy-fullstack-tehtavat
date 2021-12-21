@@ -1,10 +1,10 @@
 POST http://localhost:3003/api/blogs/
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwiaWQiOiI2MWI4YWU4NjUyOGQ3ZWYxYjE1YTU2NjUiLCJpYXQiOjE2NDAwNDQ2MzN9.spoTfvgqJ3OUZW7u_ED4nqyirxhW3l3isY1-UkIvkeI
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwiaWQiOiI2MWI4YWU4NjUyOGQ3ZWYxYjE1YTU2NjUiLCJpYXQiOjE2NDAwOTUzMzR9.J2BM5wGbrPDSa743-mqe-HOqMCKS1rCxjZ4TEB6pK0E
 
 {
     "title": "Testing 123",
-    "author": "Yo Man",
+    "author": "Yo Man 2",
     "url": "https://fullstackopen.com",
     "likes": 12
 }

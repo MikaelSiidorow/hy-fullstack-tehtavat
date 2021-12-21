@@ -1,14 +1,33 @@
+const bcrypt = require('bcrypt')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const helper = require('./test_helper')
 const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blog')
-
+const User = require('../models/user')
 
 beforeEach(async () => {
+  await User.deleteMany({})
+
+  for (let user of helper.users) {
+    let passwordHash = await bcrypt.hash(user.password, 10)
+    let newUser = new User({ username: user.username, name: user.name, passwordHash })
+    await newUser.save()
+  }
+
+  const user = await User.findOne({ username: helper.users[0].username })
+
   await Blog.deleteMany({})
-  await Blog.insertMany(helper.blogs)
+  await Blog.insertMany(helper.blogs.map( blog => ({
+    user: user.id,
+    ...blog
+  })))
+
+  const blogs = await helper.blogsInDb()
+  user.blogs = user.blogs.concat(blogs.map(blog => blog.id))
+
+  await User.findOneAndUpdate({ username: helper.users[0].username }, user)
 })
 
 test('the correct amount of blogs are returned as json', async () => {
@@ -38,9 +57,13 @@ test('a valid blog can be added', async () => {
     __v: 0
   }
 
+  const response = await api.post('/api/login').send({ username: helper.users[1].username, password: helper.users[1].password })
+  const token = response.body.token
+  
   await api
     .post('/api/blogs')
     .send(newBlog)
+    .set('Authorization', `bearer ${token}`)
     .expect(201)
     .expect('Content-Type', /application\/json/)
 
@@ -71,12 +94,34 @@ test('a blog with no like value is set to 0 likes', async () => {
     __v: 0
   }
 
-  const postedBlog = await api.post('/api/blogs').send(newBlog)
+  const response = await api.post('/api/login').send({ username: helper.users[1].username, password: helper.users[1].password })
+  const token = response.body.token
+
+  const postedBlog = await api.post('/api/blogs').send(newBlog).set('Authorization', `bearer ${token}`)
   
   expect(postedBlog.body.likes).toEqual(0)
 })
 
 describe('invalid blogs are not added', () => {
+
+  test('creation of new blog does not work without a valid token', async () => {
+    const newBlog = {
+      _id: "5a422bc61b54a676234d17fc",
+      title: "Type wars",
+      author: "Robert C. Martin",
+      url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
+      likes: 2,
+      __v: 0
+    }
+  
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(401)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd).toHaveLength(helper.blogs.length)
+  })
 
   test('a blog with no title is not added', async () => {
     const newBlog = {
@@ -87,9 +132,13 @@ describe('invalid blogs are not added', () => {
       __v: 0
     }
 
+    const response = await api.post('/api/login').send({ username: helper.users[1].username, password: helper.users[1].password })
+    const token = response.body.token
+
     await api
     .post('/api/blogs')
     .send(newBlog)
+    .set('Authorization', `bearer ${token}`)
     .expect(400)
   })
 
@@ -102,9 +151,13 @@ describe('invalid blogs are not added', () => {
       __v: 0
     }
 
+    const response = await api.post('/api/login').send({ username: helper.users[1].username, password: helper.users[1].password })
+    const token = response.body.token
+
     await api
     .post('/api/blogs')
     .send(newBlog)
+    .set('Authorization', `bearer ${token}`)
     .expect(400)
   })
 })
@@ -115,8 +168,12 @@ describe('deletion of a blog', () => {
     const blogsAtStart = await helper.blogsInDb()
     const blogtoDelete = blogsAtStart[0]
 
+    const response = await api.post('/api/login').send({ username: helper.users[0].username, password: helper.users[0].password })
+    const token = response.body.token
+
     await api
       .delete(`/api/blogs/${blogtoDelete.id}`)
+      .set('Authorization', `bearer ${token}`)
       .expect(204)
 
     const blogsAtEnd = await helper.blogsInDb()
