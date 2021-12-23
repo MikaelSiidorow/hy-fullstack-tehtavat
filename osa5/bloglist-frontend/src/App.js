@@ -144,6 +144,7 @@ const App = () => {
           <div>
             username
             <input
+              id="username"
               type="text"
               value={username}
               name="Username"
@@ -153,13 +154,14 @@ const App = () => {
           <div>
             password
             <input
+              id="password"
               type="password"
               value={password}
               name="Password"
               onChange={({ target }) => setPassword(target.value)}
             />
           </div>
-          <button type="submit">login</button>
+          <button id="login-button" type="submit">login</button>
         </form>
       </div>
     )
@@ -179,15 +181,17 @@ const App = () => {
           ref={blogFormStateRef}
         />
       </Togglable>
-      {blogs.sort( (a, b) => b.likes - a.likes).map(blog =>
-        <Blog
-          key={blog.id}
-          blog={blog}
-          likeBlog={() => likeBlog(blog.id)}
-          removeBlog={() => removeBlog(blog.id)}
-          user={user}
-        />
-      )}
+      <div id="blogs-container">
+        {blogs.sort( (a, b) => b.likes - a.likes).map(blog =>
+          <Blog
+            key={blog.id}
+            blog={blog}
+            likeBlog={() => likeBlog(blog.id)}
+            removeBlog={() => removeBlog(blog.id)}
+            user={user}
+          />
+        )}
+      </div>
     </div>
   )
 }

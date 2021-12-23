@@ -40,7 +40,7 @@ const Blog = ({ blog, likeBlog, removeBlog, user }) => {
   else {
     return (
       <div style={blogStyle}>
-        {blog.title} {blog.author}
+        <span>{blog.title} {blog.author}</span>
         <button onClick={() => toggleStyle()}>view</button>
       </div>
     )
