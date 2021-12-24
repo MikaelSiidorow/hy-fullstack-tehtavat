@@ -20,7 +20,10 @@ const useCountry = (name) => {
 
   useEffect(() => {
       axios.get((`https://restcountries.com/v2/name/${name}?fullText=true`))
-      .then(response => setCountry({...response, data: response.data[0], found: true}))
+      .then(response => setCountry({
+        found: response.data[0] ? true : false,
+        data: response.data[0] ? response.data[0] : undefined
+      }))
   }, [name])
   return country
 }
