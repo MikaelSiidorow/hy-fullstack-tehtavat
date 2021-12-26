@@ -24,12 +24,22 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
 
   blog.user = user
   const savedBlog = await blog.save()
-
   user.blogs = user.blogs.concat(savedBlog._id)
-  await User.findByIdAndUpdate(user.id, user)
+  await user.save()
     
   response.status(201).json(savedBlog)
 
+})
+
+blogsRouter.post('/:id/comments', async (request, response) => {
+  const blog = await Blog.findById(request.params.id)
+  if (!request.body.comment) {
+    return response.status(400).send({ error: 'missing comment' })
+  }
+
+  blog.comments = blog.comments.concat(request.body.comment)
+  const updatedBlog = await blog.save()
+  response.status(201).json(updatedBlog)
 })
 
 blogsRouter.put('/:id', async (request, response) => {
@@ -45,7 +55,7 @@ blogsRouter.delete('/:id', userExtractor, async (request, response) => {
   if (blog.user.toString() === user.id.toString()) {
     await blog.remove()
     user.blogs = user.blogs.filter(b => b.id.toString() !== request.params.id.toString())
-    await User.findByIdAndUpdate(user.id, user)
+    await user.save()
     response.status(204).end()
   }
   else {

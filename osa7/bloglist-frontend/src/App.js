@@ -1,21 +1,32 @@
 import React, { useState, useEffect } from 'react'
-import Blog from './components/Blog'
-import Notification from './components/Notification'
-import Togglable from './components/Togglable'
-import NewBlog from './components/NewBlog'
 
-import { useDispatch, useSelector } from 'react-redux'
+import BlogList from './components/BlogList'
+import Blog from './components/Blog'
+import UserList from './components/UserList'
+import User from './components/User'
+import LoginForm from './components/LoginForm'
+
+import axios from 'axios'
+
+import { useDispatch } from 'react-redux'
 import { initializeBlogs } from './reducers/blogReducer'
-import { retrieveUserFromStorage, login, logout } from './reducers/userReducer'
+import { retrieveUserFromStorage } from './reducers/userReducer'
+
+import {
+  BrowserRouter as Router,
+  Switch, Route
+} from 'react-router-dom'
 
 const App = () => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+  const [users, setUsers] = useState([])
 
-  const blogs = useSelector(state => state.blogs)
-  const user = useSelector(state => state.user)
+  useEffect(() => {
+    axios.get('/api/users')
+      .then(response => response.data)
+      .then(users =>
+        setUsers(users))
+  }, [])
 
-  const blogFormRef = React.createRef()
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -23,65 +34,25 @@ const App = () => {
     dispatch(retrieveUserFromStorage())
   }, [dispatch])
 
-  const handleLogin = e => {
-    e.preventDefault()
-    dispatch(login(username, password))
-  }
-
-  if (!user) {
-    return (
-      <div>
-        <h2>login to application</h2>
-
-        <Notification />
-
-        <form onSubmit={handleLogin}>
-          <div>
-            username
-            <input
-              id='username'
-              value={username}
-              onChange={({ target }) => setUsername(target.value)}
-            />
-          </div>
-          <div>
-            password
-            <input
-              id='password'
-              value={password}
-              onChange={({ target }) => setPassword(target.value)}
-            />
-          </div>
-          <button id='login'>login</button>
-        </form>
-      </div>
-    )
-  }
-
-  const byLikes = (b1, b2) => b2.likes - b1.likes
-
   return (
-    <div>
-      <h2>blogs</h2>
+    <Router>
+      <LoginForm />
 
-      <Notification />
-
-      <p>
-        {user.name} logged in <button onClick={() => dispatch(logout())}>logout</button>
-      </p>
-
-      <Togglable buttonLabel='create new blog' ref={blogFormRef}>
-        <NewBlog />
-      </Togglable>
-
-      {blogs.sort(byLikes).map(blog =>
-        <Blog
-          key={blog.id}
-          blog={blog}
-          own={user.username === blog.user.username}
-        />
-      )}
-    </div>
+      <Switch>
+        <Route path='/users/:id'>
+          <User users={users}/>
+        </Route>
+        <Route path='/users'>
+          <UserList users={users} />
+        </Route>
+        <Route path='/blogs/:id'>
+          <Blog />
+        </Route>
+        <Route path='/'>
+          <BlogList />
+        </Route>
+      </Switch>
+    </Router>
   )
 }
 
