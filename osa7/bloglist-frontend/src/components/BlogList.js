@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import NewBlog from './NewBlog'
 import Togglable from './Togglable'
+import { Table } from 'react-bootstrap'
 
 const BlogList = () => {
   const blogs = useSelector(state => state.blogs)
@@ -12,14 +13,6 @@ const BlogList = () => {
 
   const byLikes = (b1, b2) => b2.likes - b1.likes
 
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
-  }
-
   if (!user) {
     return null
   }
@@ -28,12 +21,17 @@ const BlogList = () => {
       <Togglable buttonLabel='create new blog' ref={blogFormRef}>
         <NewBlog />
       </Togglable>
-
-      {blogs.sort(byLikes).map(blog =>
-        <div key={blog.id} style={blogStyle} className='blog'>
-          <Link to={`/blogs/${blog.id}`}>{blog.title} {blog.author}</Link>
-        </div>
-      )}
+      <hr />
+      <Table striped hover>
+        <tbody>
+          {blogs.sort(byLikes).map(blog =>
+            <tr key={blog.id} className='blog'>
+              <td><Link to={`/blogs/${blog.id}`}>{blog.title}</Link></td>
+              <td>by {blog.author}</td>
+            </tr>
+          )}
+        </tbody>
+      </Table>
     </div>
   )
 }

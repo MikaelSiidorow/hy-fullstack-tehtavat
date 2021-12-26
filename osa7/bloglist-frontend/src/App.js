@@ -35,24 +35,26 @@ const App = () => {
   }, [dispatch])
 
   return (
-    <Router>
-      <LoginForm />
-
-      <Switch>
-        <Route path='/users/:id'>
-          <User users={users}/>
-        </Route>
-        <Route path='/users'>
-          <UserList users={users} />
-        </Route>
-        <Route path='/blogs/:id'>
-          <Blog />
-        </Route>
-        <Route path='/'>
-          <BlogList />
-        </Route>
-      </Switch>
-    </Router>
+    <div className='container'>
+      <Router>
+        <LoginForm />
+        <hr />
+        <Switch>
+          <Route path='/users/:id'>
+            <User users={users} />
+          </Route>
+          <Route path='/users'>
+            <UserList users={users} />
+          </Route>
+          <Route path='/blogs/:id'>
+            <Blog />
+          </Route>
+          <Route path='/'>
+            <BlogList />
+          </Route>
+        </Switch>
+      </Router>
+    </div>
   )
 }
 

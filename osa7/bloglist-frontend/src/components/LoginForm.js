@@ -3,6 +3,7 @@ import Notification from './Notification'
 import { useDispatch, useSelector } from 'react-redux'
 import { login } from '../reducers/userReducer'
 import NavBar from './NavBar'
+import { Form, Button } from 'react-bootstrap'
 
 const LoginForm = () => {
   const user = useSelector(state => state.user)
@@ -24,25 +25,29 @@ const LoginForm = () => {
 
         <Notification />
 
-        <form onSubmit={handleLogin}>
-          <div>
-            username
-            <input
+        <Form onSubmit={handleLogin}>
+          <Form.Group>
+            <Form.Label>username</Form.Label>
+            <Form.Control
               id='username'
               value={username}
               onChange={({ target }) => setUsername(target.value)}
+              type='text'
+              name='username'
             />
-          </div>
-          <div>
-            password
-            <input
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>password</Form.Label>
+            <Form.Control
               id='password'
               value={password}
               onChange={({ target }) => setPassword(target.value)}
+              type='password'
+              name='password'
             />
-          </div>
-          <button id='login'>login</button>
-        </form>
+          </Form.Group>
+          <Button variant='primary' type='submit' id='login'>login</Button>
+        </Form>
       </div>
     )
   }
@@ -50,7 +55,7 @@ const LoginForm = () => {
     return (
       <div>
         <NavBar user={user}/>
-        <h2>blog app</h2>
+        <h2>Blog App</h2>
 
         <Notification />
       </div>

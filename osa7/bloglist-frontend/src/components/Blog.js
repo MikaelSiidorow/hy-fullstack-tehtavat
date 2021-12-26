@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { likeBlog, removeBlog } from '../reducers/blogReducer'
 import { useParams, useHistory } from 'react-router-dom'
 import blogService from '../services/blogs'
+import { Link } from 'react-router-dom'
+import { ListGroup, Button, Form } from 'react-bootstrap'
 
 const Blog = () => {
   const blogs = useSelector(state => state.blogs)
@@ -34,28 +36,36 @@ const Blog = () => {
   }
 
   return (
-    <div>
-      <h1>{blog.title} {blog.author}</h1>
-      <div><a href={blog.url.match(/^.{3,5}:\/\//) ? blog.url : `http://${blog.url}`}>{blog.url}</a></div>
-      <div>{blog.likes} likes
-        <button onClick={() => dispatch(likeBlog(blog))}>like</button>
+    <div className='container'>
+      <div className='container'>
+        <h1><i>{blog.title}</i> by {blog.author}</h1>
+        <div><a href={blog.url.match(/^.{3,5}:\/\//) ? blog.url : `http://${blog.url}`}>{blog.url}</a></div>
+        <div>{blog.likes} likes
+          <Button variant='success' onClick={() => dispatch(likeBlog(blog))}>like</Button>
+        </div>
+        <div>added by <Link to={`/users/${blog.user.id}/`}>{blog.user.name}</Link></div>
+        {own && <Button variant='danger' onClick={handleRemove}>remove</Button>}
+        <hr />
       </div>
-      <div>added by {blog.user.name}</div>
-      {own && <button onClick={handleRemove}>remove</button>}
-      <h3>comments</h3>
-      <form onSubmit={postComment}>
-        <input
-          id='comment'
-          value={comment}
-          onChange={({ target }) => setComment(target.value)}
-        />
-        <button id='comment'>add comment</button>
-      </form>
-      <ul>
-        {blog.comments.map(comment =>
-          <li key={comment}>{comment}</li>
-        )}
-      </ul>
+      <div className='container'>
+        <h3>comments</h3>
+        <Form onSubmit={postComment}>
+          <Form.Control
+            id='comment'
+            value={comment}
+            onChange={({ target }) => setComment(target.value)}
+            type='text'
+            name='comment'
+          />
+          <Button variant='primary' type='submit' id='comment'>add comment</Button>
+        </Form>
+        <hr />
+        <ListGroup>
+          {blog.comments.map(comment =>
+            <ListGroup.Item key={comment}>{comment}</ListGroup.Item>
+          )}
+        </ListGroup>
+      </div>
     </div>
   )
 }

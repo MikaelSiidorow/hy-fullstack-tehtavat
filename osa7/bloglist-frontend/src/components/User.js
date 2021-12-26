@@ -1,5 +1,7 @@
 import React from 'react'
+import { ListGroup } from 'react-bootstrap'
 import { useParams } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 const User = ({ users }) => {
   const id = useParams().id
@@ -11,12 +13,13 @@ const User = ({ users }) => {
   return (
     <div>
       <h1>{user.name}</h1>
+      <hr />
       <h2>added blogs</h2>
-      <ul>
+      <ListGroup>
         {user.blogs.map(blog =>
-          <li key={blog.id}>{blog.title}</li>
+          <ListGroup.Item key={blog.id}><Link to={`/blogs/${blog.id}`}>{blog.title}</Link></ListGroup.Item>
         )}
-      </ul>
+      </ListGroup>
     </div>
   )
 }
